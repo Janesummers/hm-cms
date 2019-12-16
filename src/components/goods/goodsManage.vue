@@ -7,9 +7,10 @@
       :title="title" 
       :content="text" 
       @cencelClick="close" 
-      @confirmClick="comfirmDel"
+      @confirmClick="comfirmBtn"
+      :cencelBtn="cencelShow"
      />
-     <alterGoods />
+     <alterGoods v-show="alterShow" @close="closeAlter" :id="alterId" />
     <table>
       <tr>
         <td>序号</td>
@@ -42,7 +43,7 @@
         <td>{{item.status}}</td>
         <td>{{item.left_count}}</td>
         <td>
-          <span class="pointer">修改</span>
+          <span class="pointer" @click="alterGoods(item.id, item.content_id)">修改</span>
           <span class="pointer" @click="delGoods(item.id, item.content_id)">删除</span>
         </td>
       </tr>
@@ -63,7 +64,11 @@ export default {
       title: '',
       text: '',
       id: '',
-      contentId: ''
+      contentId: '',
+      alterShow: false,
+      alterId: '',
+      option: '',
+      cencelShow: false
     }
   },
   methods: {
@@ -81,12 +86,37 @@ export default {
         }
       })
     },
+    closeAlter (msg) {
+      let alterShow = this.alterShow;
+      this.alterShow = !alterShow;
+      this.alterId = {
+        id: '',
+        contentId: ''
+      };
+      if (msg) {
+        this.text = msg;
+        this.title = '提示';
+        this.shadow = true;
+        this.cencelShow = false;
+        this.getGoods();
+      }
+    },
+    alterGoods (id, contentId) {
+      let alterShow = this.alterShow;
+      this.alterShow = !alterShow;
+      this.alterId = {
+        id,
+        contentId
+      };
+    },
     delGoods (id, contentId) {
       this.text = '确定删除吗?';
       this.shadow = true;
       this.title = '提示';
       this.id = id;
       this.contentId = contentId;
+      this.option = 'del';
+      this.cencelShow = true;
     },
     close () {
       this.shadow = false;
@@ -94,8 +124,16 @@ export default {
       this.title = '';
       this.text = '';
       this.id = '';
+      this.option = '';
     },
-    comfirmDel () {
+    comfirmBtn () {
+      if (this.option == 'del') {
+        this.confirmDel();
+      } else {
+        this.close();
+      }
+    },
+    confirmDel () {
       let list = this.goodsList;
       this.$store.commit('postRequest', {
         uri: '/delGoods',
@@ -109,24 +147,27 @@ export default {
             setTimeout(() => {
               this.goodsList = list.filter(item => item.id != this.id);
               this.close();
-            }, 1000);
+            }, 1500);
           } else {
             this.text = '删除失败！网络错误';
           }
         }
       })
+    },
+    getGoods () {
+      this.$store.commit('postRequest', {
+        uri: '/getGoods',
+        data: {
+          pageSize: 100
+        },
+        callBack: res => {
+          this.goodsList = res.data.data
+        }
+      })
     }
   },
   created () {
-    this.$store.commit('postRequest', {
-      uri: '/getGoods',
-      data: {
-        pageSize: 100
-      },
-      callBack: res => {
-        this.goodsList = res.data.data
-      }
-    })
+    this.getGoods();
   },
   components: {
     DialogBox,

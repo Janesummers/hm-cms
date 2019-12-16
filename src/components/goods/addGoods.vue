@@ -5,6 +5,8 @@
       :content="dialogInfo.text" 
       :title="dialogInfo.title" 
       @closeShadow="close"
+      @confirmClick="close"
+      :cencelBtn="false"
     />
     <table>
       <tr>
@@ -35,7 +37,7 @@
       <tr>
         <td>商品banner</td>
         <td>
-          <div v-for="(item, index) in bannerImg" :key="index" >
+          <div v-for="(item, index) in bannerImg" :key="index">
             <input 
               type="text" 
               placeholder="请输入图片地址" 
@@ -53,7 +55,7 @@
       <tr>
         <td>商品详情图</td>
         <td>
-          <div v-for="(item, index) in detailImg" :key="index">
+          <div v-for="(item, index) in detailImg" :key="index" >
             <input 
               type="text" 
               placeholder="请输入图片地址" 
@@ -147,9 +149,6 @@ export default {
       this.detailImg = [''];
     }
   },
-  created () {
-
-  },
   components: {
     dialogBox
   }
@@ -208,6 +207,7 @@ export default {
         }
         .delPhoto {
           cursor: pointer;
+          margin-left: 10px;
         }
       }
     }

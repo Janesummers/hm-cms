@@ -18,8 +18,8 @@
           {{content}}
         </div>
         <div class="btn">
-          <span class="cencel" @click="cencelClick">取消</span>
-          <span class="confirm" @click="confirmClick">确认</span>
+          <span class="cencel" @click="cencelClick" v-if="cencelBtn">取消</span>
+          <span class="confirm" @click="confirmClick" :style="{width: cencelBtn ? '42%' : '90%'}">确认</span>
         </div>
       </div>
     </div>
@@ -28,7 +28,7 @@
 
 <script>
 export default {
-  props: ['data', 'title', 'content'],
+  props: ['data', 'title', 'content', 'cencelBtn'],
   data () {
     return {
       minWidth: '400px'
@@ -46,8 +46,12 @@ export default {
     }
   },
   updated () {
+    if (!this.data) {
+      this.minWidth = '280px';
+      return;
+    }
     if (this.data.length <= 0) {
-      this.minWidth = '300px';
+      this.minWidth = '280px';
     }
   }
 }
@@ -126,7 +130,7 @@ export default {
         display: flex;
         justify-content: space-around;
         span {
-          width: 36%;
+          width: 42%;
           text-align: center;
           line-height: 36px;
           height: 36px;

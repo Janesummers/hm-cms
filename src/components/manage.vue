@@ -19,6 +19,12 @@ export default {
   components: {
     topBar,
     SideBar
+  },
+  beforeCreate () {
+    let userInfo = localStorage.getItem('userInfo');
+    if (!userInfo) {
+      this.$router.replace('/login')
+    }
   }
 }
 </script>

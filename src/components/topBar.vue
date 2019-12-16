@@ -30,8 +30,10 @@ export default {
   },
   created () {
     let userInfo = localStorage.getItem('userInfo');
-    userInfo = JSON.parse(userInfo);
-    this.username = userInfo.username;
+    if (userInfo) {
+      userInfo = JSON.parse(userInfo);
+      this.username = userInfo.username;
+    }
   }
 }
 </script>
