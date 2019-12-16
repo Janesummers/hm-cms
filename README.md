@@ -1,21 +1,20 @@
 # hm-cms
 
-> 128小分队
+#### 介绍
+128小分队
 
-## Build Setup
+#### 软件架构
 
-``` bash
-# install dependencies
-npm install
 
-# serve with hot reload at localhost:8080
-npm run dev
+#### 安装
 
-# build for production with minification
-npm run build
+1. 执行 npm install 下载依赖包
+2. npm run dev
 
-# build for production and view the bundle analyzer report
-npm run build --report
-```
+#### 使用说明
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+1. git init
+2. git remote add origin https://github.com/Janesummers/hm-cms.git
+3. git pull origin develop or master
+
+#### 参与贡献
