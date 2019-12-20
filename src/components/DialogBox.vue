@@ -1,7 +1,7 @@
 <template>
   <div id="dialog">
     <div class="shadow"></div>
-    <div id="dialogBox" :style="{'min-width': minWidth}">
+    <div id="dialogBox" :style="{'max-width': maxWidth, 'min-width': minWidth}">
       <div class="title">
         {{title}}
         <div class="close" @click="close" title="关闭">×</div>
@@ -13,10 +13,8 @@
           </div>
         </div>
       </div>
-      <div v-if="content">
-        <div class="hint">
-          {{content}}
-        </div>
+      <div v-if="content" class="text">
+        <div class="hint" v-html="content"></div>
         <div class="btn">
           <span class="cencel" @click="cencelClick" v-if="cencelBtn">取消</span>
           <span class="confirm" @click="confirmClick" :style="{width: cencelBtn ? '42%' : '90%'}">确认</span>
@@ -31,7 +29,8 @@ export default {
   props: ['data', 'title', 'content', 'cencelBtn'],
   data () {
     return {
-      minWidth: '400px'
+      maxWidth: '400px',
+      minWidth: '280px'
     }
   },
   methods: {
@@ -47,11 +46,32 @@ export default {
   },
   updated () {
     if (!this.data) {
+      this.maxWidth = '280px';
       this.minWidth = '280px';
       return;
     }
     if (this.data.length <= 0) {
+      this.maxWidth = '280px';
       this.minWidth = '280px';
+    }
+  },
+  watch: {
+    'data': {
+      handler (n, o) {
+        if (!n) {
+          this.maxWidth = '280px';
+          this.minWidth = '280px';
+        } else {
+          if (n.length <= 0) {
+            this.maxWidth = '280px';
+            this.minWidth = '280px';
+          } else {
+            this.maxWidth = '400px';
+            this.minWidth = '400px';
+          }
+        }
+      },
+      deep: true
     }
   }
 }
@@ -71,10 +91,7 @@ export default {
     }
     #dialogBox {
       position: fixed;
-      max-width: 500px;
-      // min-width: 400px;
       max-height: 560px;
-      min-height: 200px;
       left: 50%;
       top: 50%;
       background: #fff;
@@ -99,11 +116,7 @@ export default {
       }
       .box {
         overflow: hidden;
-        overflow-y: scroll; 
-        // display: flex;
-        // flex-wrap: wrap;
-        // flex-direction: column;
-        // justify-content: space-between;
+        overflow-y: scroll;
         width: 100%;
         max-height: 510px;
         min-height: 150px;
@@ -118,14 +131,17 @@ export default {
           }
         }
       }
-      .hint {
-        padding: 20px 0;
+      .text {
         display: flex;
         justify-content: center;
-        align-items: center;
-        min-height: 100px;
+        flex-wrap: wrap;
+      }
+      .hint {
+        padding: 20px;
+        display: inline-block;
       }
       .btn {
+        width: 100%;
         height: 50px;
         display: flex;
         justify-content: space-around;

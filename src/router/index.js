@@ -4,6 +4,7 @@ import Login from '@/components/login'
 import Manage from '@/components/manage'
 import GoodsManage from '@/components/goods/goodsManage'
 import AddGoods from '@/components/goods/addGoods'
+import CommentsManage from '@/components/comment/comment'
 
 const routerPush = Router.prototype.push;
 Router.prototype.push = function push (location) {
@@ -38,6 +39,11 @@ export default new Router({
           path: 'addGoods',
           name: 'AddGoods',
           component: AddGoods
+        },
+        {
+          path: 'commentsManage',
+          name: 'CommentsManage',
+          component: CommentsManage
         }
       ]
     }

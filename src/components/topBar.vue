@@ -4,6 +4,7 @@
       <div class="img_box">
         <img src="../assets/logo.png" alt="">
       </div>
+      <div class="title">聚宝管理系统</div>
     </div>
     <div class="user">
       <div class="img_box">
@@ -51,6 +52,8 @@ export default {
     box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
     z-index: 10;
     .logo {
+      display: flex;
+      align-items: center;
       .img_box {
         width: 30px;
         height: 30px;
@@ -58,6 +61,10 @@ export default {
         img {
           width: 100%;
         }
+      }
+      .title {
+        font-size: 20px;
+        margin-left: 14px;
       }
     }
     .user {
@@ -76,6 +83,7 @@ export default {
       .loginOut {
         font-size: 12px;
         margin-left: 20px;
+        cursor: pointer;
       }
     }
   }

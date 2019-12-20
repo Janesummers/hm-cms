@@ -37,17 +37,19 @@
       <tr>
         <td>商品banner</td>
         <td>
-          <div v-for="(item, index) in bannerImg" :key="index">
-            <input 
-              type="text" 
-              placeholder="请输入图片地址" 
-              v-model="bannerImg[index]"
-            >
-            <span 
-              v-if="bannerImg.length > 1 && index != 0"
-              class="delPhoto"
-              @click="del('bannerImg', index)"
-            >×</span>
+          <div class="box">
+            <div v-for="(item, index) in bannerImg" :key="index">
+              <input 
+                type="text" 
+                placeholder="请输入图片地址" 
+                v-model="bannerImg[index]"
+              >
+              <span 
+                v-if="bannerImg.length > 1 && index != 0"
+                class="delPhoto"
+                @click="del('bannerImg', index)"
+              >×</span>
+            </div>
           </div>
           <p class="addPhoto" @click="addImg('bannerImg')">新增图片</p>
         </td>
@@ -55,17 +57,19 @@
       <tr>
         <td>商品详情图</td>
         <td>
-          <div v-for="(item, index) in detailImg" :key="index" >
-            <input 
-              type="text" 
-              placeholder="请输入图片地址" 
-              v-model="detailImg[index]"
-            >
-            <span 
-              v-if="detailImg.length > 1 && index != 0"
-              class="delPhoto"
-              @click="del('detailImg', index)"
-            >×</span>
+          <div class="box">
+            <div v-for="(item, index) in detailImg" :key="index" >
+              <input 
+                type="text" 
+                placeholder="请输入图片地址" 
+                v-model="detailImg[index]"
+              >
+              <span 
+                v-if="detailImg.length > 1 && index != 0"
+                class="delPhoto"
+                @click="del('detailImg', index)"
+              >×</span>
+            </div>
           </div>
           <p class="addPhoto" @click="addImg('detailImg')">新增图片</p>
         </td>
@@ -157,6 +161,9 @@ export default {
 
 <style lang="less" scoped>
   #addGoods {
+    overflow: scroll;
+    width: 100%;
+    height: 100%;
     table {
       background: #fff;
       width: 100%;
@@ -183,15 +190,25 @@ export default {
             display: inline-block;
           }
         }
+        .box {
+          height: 222px;
+          overflow: hidden;
+          overflow-y: scroll;
+        }
         input {
-          width: 50%;
-          height: 30px;
+          width: 96%;
+          height: 40px;
           display: inline-block;
           font-size: 16px;
         }
         input[type='button'] {
           cursor: pointer;
-          width: 100%;
+          width: 300px;
+          background: #ea4131;
+          border-radius: 30px;
+          height: 40px;
+          line-height: 40px;
+          color: #fff;
         }
         .addPhoto {
           text-align: center;
@@ -204,10 +221,13 @@ export default {
           margin-top: 10px;
           color: #ccc;
           cursor: pointer;
+          user-select: none;
         }
         .delPhoto {
           cursor: pointer;
           margin-left: 10px;
+          font-size: 20px;
+          user-select: none;
         }
       }
     }

@@ -36,9 +36,13 @@ export default {
                 choose: false
               }
             ],
-            ch: 3,
+            ch: 0,
             show: false
           }
+        },
+        {
+          name: '留言反馈',
+          path: '/manage/commentsManage'
         }
       ],
       selectIndex: null
@@ -55,22 +59,29 @@ export default {
       })
       sideBarNav[index].children.ch = sideBarNav[index].children.show ? 0 : Number(len);
       sideBarNav[index].children.show = !sideBarNav[index].children.show;
+      sideBarNav[index].children.list[0].choose = true;
       this.selectIndex = index;
+      this.$router.push(sideBarNav[index].children.list[0].path)
       this.sideBarNav = sideBarNav;
     },
     routerChange () {
       let {sideBarNav} = this;
-      sideBarNav.forEach(item => {
+      sideBarNav.forEach((item, index) => {
         if (item.children) {
           item.children.list.forEach(items => {
             if (this.$route.path == items.path) {
               items.choose = true;
+              item.children.ch = item.children.list.length;
+              this.selectIndex = index;
             } else {
               items.choose = false;
             }
           });
+        } else {
+          if (this.$route.path == item.path) {
+            this.selectIndex = index;
+          }
         }
-        
       });
       this.sideBarNav = sideBarNav;
     },
@@ -83,6 +94,10 @@ export default {
           sideBarNav[i].children.show = false;
         }
       })
+      if (!sideBarNav[index].children) {
+        this.$router.push(sideBarNav[index].path);
+      }
+      this.sideBarNav = sideBarNav;
     }
   },
   watch: {
@@ -94,9 +109,11 @@ export default {
     }
   },
   created () {
-    if (this.sideBarNav.length == 1) {
-      this.selectIndex = 0;
-    }
+    // if (this.sideBarNav.length == 1) {
+    //   this.selectIndex = 0;
+    // } 
+    // this.selectIndex = 0;
+    // this.
     this.routerChange();
   }
 }
@@ -118,6 +135,7 @@ export default {
         }
       }
       p {
+        transition: font 0.5s;
         height: 40px;
         line-height: 40px;
         padding-left: 20px;

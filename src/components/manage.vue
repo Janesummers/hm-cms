@@ -33,7 +33,7 @@ export default {
   #manage {
     display: flex;
     width: 100%;
-    min-width: 1200px;
+    min-width: 1288px;
     height: 100%;
     position: relative;
     flex-wrap: wrap;

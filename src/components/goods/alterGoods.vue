@@ -37,10 +37,10 @@
                 <input 
                   type="text" 
                   placeholder="请输入图片地址" 
-                  v-model="bannerImg[index]"
+                  v-model="bannerImg[index].src"
                 >
                 <span 
-                  v-if="bannerImg.length > 1 && index != 0"
+                  v-if="bannerImg.length > 1"
                   class="delPhoto"
                   @click="del('bannerImg', index)"
                 >×</span>
@@ -56,10 +56,10 @@
                   <input 
                     type="text" 
                     placeholder="请输入图片地址" 
-                    v-model="detailImg[index]"
+                    v-model="detailImg[index].src"
                   >
                   <span 
-                    v-if="detailImg.length > 1 && index != 0"
+                    v-if="detailImg.length > 1"
                     class="delPhoto"
                     @click="del('detailImg', index)"
                   >×</span>
@@ -92,19 +92,61 @@ export default {
       bannerImg: [],
       bannerImgOrigin: [],
       detailImg: [],
-      detailImgOrigin: []
+      detailImgOrigin: [],
+      bannerDel: [],
+      detailDel: []
     }
   },
   methods: {
     close () {
       this.$emit('close');
     },
+    checkChange () {
+      let bannerChange = [];
+      let bannerImg = this.bannerImg;
+      let bannerImgOrigin = this.bannerImgOrigin;
+      let detailChange = [];
+      let detailImg = this.detailImg;
+      let detailImgOrigin = this.detailImgOrigin;
+
+      for (let i = 0; i < bannerImgOrigin.length; i++) {
+        if (bannerImgOrigin[i].src != bannerImg[i].src) {
+          bannerChange.push(bannerImg[i]);
+        }
+      }
+
+      for (let i = 0; i < detailImgOrigin.length; i++) {
+        if (detailImgOrigin[i].src != detailImg[i].src) {
+          detailChange.push(detailImg[i]);
+        }
+      }
+
+      return {bannerChange, detailChange};
+
+    },
+    getAddData () {
+      let bannerImg = this.bannerImg;
+      let detailImg = this.detailImg;
+      let newBanner = [];
+      let newDetail = [];
+      bannerImg.forEach(item => {
+        if (!item.id) {
+          newBanner.push(item);
+        }
+      })
+      detailImg.forEach(item => {
+        if (!item.id) {
+          newDetail.push(item);
+        }
+      })
+      return {newBanner, newDetail};
+    },
     save () {
+      let {bannerChange, detailChange} = this.checkChange();
       let {id, contentId} = this.id;
-      let bannerLen = this.bannerImgOrigin.length;
-      let bannerImg = this.bannerImg.slice(bannerLen);
-      let detailImgLen = this.detailImgOrigin.length;
-      let detailImg = this.detailImg.slice(detailImgLen);
+      let {newBanner, newDetail} = this.getAddData();
+      let {bannerDel, detailDel} = this;
+      
       this.$store.commit('postRequest', {
         uri: '/alterGoods',
         data: {
@@ -115,8 +157,12 @@ export default {
           price: this.goodsPrice,
           oldPrice: this.goodsOldPrice,
           left_count: this.left_count,
-          bannerImg,
-          detailImg
+          bannerChange,
+          detailChange,
+          newBanner,
+          newDetail,
+          bannerDel,
+          detailDel
         },
         callBack: res => {
           if (res.data.data == 'ok') {
@@ -130,7 +176,10 @@ export default {
       })
     },
     addImg (name) {
-      this[name].push('');
+      this[name].push({
+        id: null,
+        src: ''
+      });
     },
     resetData () {
       this.goodsName = '';
@@ -140,8 +189,47 @@ export default {
       this.left_count = '';
       this.bannerImg = [];
       this.detailImg = [];
+      this.bannerChange = [];
+      this.detailChange = [];
+      this.newBanner = [];
+      this.newDetail = [];
+      this.bannerDel = [];
+      this.detailDel = [];
+      this.bannerImgOrigin = [];
+      this.detailImgOrigin = [];
     },
     del (name, index) {
+      if (this[name][index].id) {
+        console.log(this[name][index].id)
+        if (name.includes('banner')) {
+          let bannerDel = this.bannerDel;
+          let exits = false;
+          bannerDel.forEach(item => {
+            if (this[name][index].id == item.id) {
+              exits = true;
+            }
+          })
+          if (!exits) {
+            bannerDel.push(this[name][index]);
+            this.bannerDel = bannerDel;
+            this.bannerImgOrigin.splice(index, 1);
+          }
+        } else if (name.includes('detail')) {
+          let detailDel = this.detailDel;
+          let exits = false;
+          detailDel.forEach(item => {
+            if (this[name][index].id == item.id) {
+              exits = true;
+            }
+          })
+          if (!exits) {
+            detailDel.push(this[name][index]);
+            this.detailDel = detailDel;
+            this.detailImgOrigin.splice(index, 1);
+          }
+        }
+      }
+      
       this[name].splice(index, 1);
     },
     getGoodsInfo () {
@@ -192,26 +280,51 @@ export default {
 
       let allDone = Promise.all([getOnceGoods, getGoodsBanner, getDetailImg]);
       allDone.then(([goodsInfo, goodsBanner, goodsDetailImg]) => {
-        this.goodsName = goodsInfo[0].name;
-        this.goodsImg = goodsInfo[0].img;
-        this.goodsPrice = goodsInfo[0].new_price;
-        this.goodsOldPrice = goodsInfo[0].old_price;
-        this.left_count = goodsInfo[0].left_count;
-        let banner = [];
-        goodsBanner.forEach(item => banner.push(item.src));
-        this.bannerImg = banner;
-        this.bannerImgOrigin = banner.concat();
-        let detailImg = [];
-        goodsDetailImg.forEach(item => detailImg.push(item.src));
-        this.detailImg = detailImg;
-        this.detailImgOrigin = detailImg.concat();
+        this.formatData(goodsInfo, goodsBanner, goodsDetailImg);
       });
+    },
+    formatData (goodsInfo, goodsBanner, goodsDetailImg) {
+      this.goodsName = goodsInfo[0].name;
+      this.goodsImg = goodsInfo[0].img;
+      this.goodsPrice = goodsInfo[0].new_price;
+      this.goodsOldPrice = goodsInfo[0].old_price;
+      this.left_count = goodsInfo[0].left_count;
+      let bannerImg = [];
+      let bannerImgOrigin = [];
+      let detailImg = [];
+      let detailImgOrigin = [];
+
+      goodsBanner.forEach(item => {
+        bannerImg.push({
+          id: item.id,
+          src: item.src
+        });
+        bannerImgOrigin.push({
+          id: item.id,
+          src: item.src
+        });
+      });
+      this.bannerImg = bannerImg;
+      this.bannerImgOrigin = bannerImgOrigin;
+      
+      goodsDetailImg.forEach(item => {
+        detailImg.push({
+          id: item.id,
+          src: item.src
+        });
+        detailImgOrigin.push({
+          id: item.id,
+          src: item.src
+        });
+      });
+      this.detailImg = detailImg;
+      this.detailImgOrigin = detailImgOrigin;
     }
   },
   watch: {
     'id': {
       handler (n, o) {
-        if (n) {
+        if (n.id) {
           this.getGoodsInfo();
         }
       },
