@@ -7,7 +7,7 @@ Vue.use(VueResourse)
 
 const store = new Vuex.Store({
   state: {
-    origins: 'http://loalhost:8080'
+    origins: `${window.origin}/api`
   },
   mutations: {
     postRequest (state, payload) {

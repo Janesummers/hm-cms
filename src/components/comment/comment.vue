@@ -38,10 +38,12 @@ export default {
           var regExp;
           data.forEach((item, index) => {
             if (item.user_name.length == 2) {
-              regExp = new RegExp("/(?<=.{1})[\w\W]/");
+              // eslint-disable-next-line
+              regExp = new RegExp('(?<=.{1})[\w\W]');
               data[index].user_name = data[index].user_name.replace(regExp, '****');
             } else if (item.user_name.length > 2) {
-              regExp = new RegExp("/(?<=.{1})[\w\W]*(?=.{1})/");
+              // eslint-disable-next-line
+              regExp = new RegExp('(?<=.{1})[\w\W]*(?=.{1})');
               data[index].user_name = data[index].user_name.replace(regExp, '****');
             } else {
               data[index].user_name = '匿名';

@@ -9,7 +9,7 @@
         </div>
         <div class="pwd">
           <span class="iconfont icon-mima ico"></span>
-          <input type="password" placeholder="密码" v-model="pwd">
+          <input type="password" placeholder="密码" v-model="pwd" @keydown.enter="userLogin">
         </div>
         <div class="hint" v-if="isHint">
           {{errorMessage}}

@@ -265,6 +265,11 @@ export default {
       }
       .item {
         display: flex;
+        transition: 0.1s;
+        &:hover {
+          background: #0ca1ea;
+          color: #fff;
+        }
         >div {
           min-height: 36px;
           &.opc {
